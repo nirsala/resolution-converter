@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resolution Converter — AI-Powered</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <header>
+    <div class="logo">
+      <span class="logo-icon">🎬</span>
+      <span class="logo-text">ResolutionAI</span>
+    </div>
+    <nav>
+      <a href="#converter">המרה</a>
+      <a href="#history">היסטוריה</a>
+    </nav>
+  </header>
+
+  <main>
+
+    <!-- ── Hero ──────────────────────────────────────────────────── -->
+    <section class="hero">
+      <h1>המרת רזולוציה חכמה<br/><span>מבוססת בינה מלאכותית</span></h1>
+      <p>העלה תמונה או סרטון, בחר רזולוציה יעד — ה-AI ישמור על הרעיון המקורי.</p>
+    </section>
+
+    <!-- ── Converter Card ─────────────────────────────────────────── -->
+    <section id="converter" class="card converter-card">
+
+      <!-- Drop Zone -->
+      <div class="drop-zone" id="dropZone">
+        <div class="drop-icon">📁</div>
+        <p class="drop-title">גרור קובץ לכאן</p>
+        <p class="drop-sub">או לחץ לבחירה</p>
+        <p class="drop-types">תמונות: JPG, PNG, WebP, TIFF, BMP | סרטונים: MP4, MOV, AVI, MKV</p>
+        <input type="file" id="fileInput" accept="image/*,video/*" hidden />
+      </div>
+
+      <!-- File preview -->
+      <div class="file-preview hidden" id="filePreview">
+        <div class="preview-thumb" id="previewThumb"></div>
+        <div class="preview-info">
+          <span class="preview-name" id="previewName"></span>
+          <span class="preview-size" id="previewSize"></span>
+          <button class="btn-text" id="btnClearFile">× שנה קובץ</button>
+        </div>
+      </div>
+
+      <!-- Settings -->
+      <div class="settings-grid">
+
+        <div class="field-group">
+          <label>רזולוציה יעד</label>
+          <div class="preset-buttons">
+            <button class="preset-btn active" data-w="1920" data-h="1080">1080p FHD</button>
+            <button class="preset-btn" data-w="3840" data-h="2160">4K UHD</button>
+            <button class="preset-btn" data-w="1280" data-h="720">720p HD</button>
+            <button class="preset-btn" data-w="7680" data-h="4320">8K</button>
+            <button class="preset-btn" data-w="1080" data-h="1920">9:16 Story</button>
+            <button class="preset-btn" data-w="1080" data-h="1080">1:1 Square</button>
+            <button class="preset-btn" data-w="0" data-h="0" id="customPresetBtn">מותאם אישית</button>
+          </div>
+          <div class="custom-dims hidden" id="customDims">
+            <input type="number" id="inputW" placeholder="רוחב (px)" min="1" max="7680" />
+            <span>×</span>
+            <input type="number" id="inputH" placeholder="גובה (px)" min="1" max="4320" />
+          </div>
+          <div class="dim-display" id="dimDisplay">1920 × 1080</div>
+        </div>
+
+        <div class="field-group">
+          <label>אסטרטגיה</label>
+          <div class="strategy-cards">
+            <label class="strategy-card active" data-value="smart_crop">
+              <input type="radio" name="strategy" value="smart_crop" checked hidden />
+              <span class="strategy-icon">🧠</span>
+              <span class="strategy-title">Smart Crop</span>
+              <span class="strategy-desc">AI מוצא את הנושא ומרכז אותו</span>
+            </label>
+            <label class="strategy-card" data-value="upscale">
+              <input type="radio" name="strategy" value="upscale" hidden />
+              <span class="strategy-icon">✨</span>
+              <span class="strategy-title">AI Upscale</span>
+              <span class="strategy-desc">הגדלה חכמה עם Real-ESRGAN</span>
+            </label>
+            <label class="strategy-card" data-value="fit_pad">
+              <input type="radio" name="strategy" value="fit_pad" hidden />
+              <span class="strategy-icon">🖼️</span>
+              <span class="strategy-title">Fit + Pad</span>
+              <span class="strategy-desc">שמירה מלאה עם פדינג שחור</span>
+            </label>
+            <label class="strategy-card" data-value="stretch">
+              <input type="radio" name="strategy" value="stretch" hidden />
+              <span class="strategy-icon">↔️</span>
+              <span class="strategy-title">Stretch</span>
+              <span class="strategy-desc">מתיחה ישירה (ללא שמירת יחס)</span>
+            </label>
+          </div>
+        </div>
+
+      </div>
+
+      <button class="btn-primary btn-convert" id="btnConvert" disabled>
+        <span class="btn-label">המר עכשיו</span>
+        <span class="btn-spinner hidden" id="btnSpinner">⏳</span>
+      </button>
+
+    </section>
+
+    <!-- ── Job Status ─────────────────────────────────────────────── -->
+    <section class="card status-card hidden" id="statusCard">
+      <h2 id="statusTitle">מעבד...</h2>
+
+      <div class="progress-bar-wrap" id="progressWrap">
+        <div class="progress-bar" id="progressBar"></div>
+      </div>
+      <p class="progress-label" id="progressLabel">0%</p>
+
+      <div class="status-badges">
+        <span class="badge" id="badgeStatus">ממתין</span>
+        <span class="badge badge-type" id="badgeType">תמונה</span>
+      </div>
+
+      <div class="result-area hidden" id="resultArea">
+        <div class="result-preview" id="resultPreview"></div>
+        <a class="btn-primary btn-download" id="btnDownload" download>⬇️ הורד קובץ</a>
+      </div>
+
+      <div class="error-area hidden" id="errorArea">
+        <p id="errorMsg"></p>
+      </div>
+    </section>
+
+    <!-- ── History ────────────────────────────────────────────────── -->
+    <section id="history" class="card history-card">
+      <div class="history-header">
+        <h2>היסטוריית המרות</h2>
+        <button class="btn-text" id="btnRefreshHistory">🔄 רענן</button>
+      </div>
+      <table class="history-table">
+        <thead>
+          <tr>
+            <th>קובץ</th>
+            <th>סוג</th>
+            <th>רזולוציה יעד</th>
+            <th>אסטרטגיה</th>
+            <th>סטטוס</th>
+            <th>הורדה</th>
+          </tr>
+        </thead>
+        <tbody id="historyBody">
+          <tr><td colspan="6" class="empty-row">אין המרות עדיין</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>ResolutionAI &copy; 2025 · Powered by Real-ESRGAN + U²-Net</p>
+  </footer>
+
+  <script src="config.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

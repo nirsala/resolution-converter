@@ -1,0 +1,35 @@
+# Web framework
+fastapi==0.111.0
+uvicorn[standard]==0.30.1
+python-multipart==0.0.9
+pydantic-settings==2.3.4
+
+# Database
+sqlmodel==0.0.19
+aiosqlite==0.20.0
+
+# Task queue
+celery==5.4.0
+redis==5.0.6
+flower==2.0.1
+
+# Image processing
+Pillow==10.4.0
+opencv-python-headless==4.10.0.84
+numpy==1.26.4
+
+# AI - PyTorch (CPU version; swap for cu121 build on GPU machines)
+torch==2.3.1
+torchvision==0.18.1
+
+# Real-ESRGAN (AI upscaling)
+basicsr==1.4.2
+realesrgan==0.3.0
+
+# Storage
+boto3==1.34.144
+
+# Utilities
+python-magic==0.4.27
+aiofiles==23.2.1
+structlog==24.1.0

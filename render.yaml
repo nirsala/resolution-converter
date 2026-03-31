@@ -1,0 +1,89 @@
+services:
+  # ── API (FastAPI) ──────────────────────────────────────────────────────
+  - type: web
+    name: resolution-api
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    startCommand: "sh /app/scripts/start_api.sh"
+    plan: starter
+    disk:
+      name: storage
+      mountPath: /storage
+      sizeGB: 10
+    envVars:
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: resolution-redis
+          property: connectionString
+      - key: STORAGE_BACKEND
+        value: local
+      - key: LOCAL_STORAGE_PATH
+        value: /storage
+      - key: DATABASE_URL
+        value: sqlite:////storage/jobs.db
+      - key: REALESRGAN_MODEL_PATH
+        value: /storage/models/realesrgan/RealESRGAN_x4plus.pth
+      - key: U2NET_MODEL_PATH
+        value: /storage/models/u2net/u2net.pth
+      - key: MAX_IMAGE_SIZE_MB
+        value: "50"
+      - key: MAX_VIDEO_SIZE_MB
+        value: "500"
+      - key: MAX_VIDEO_FRAMES
+        value: "300"
+    healthCheckPath: /api/health
+
+  # ── Celery Worker ──────────────────────────────────────────────────────
+  - type: worker
+    name: resolution-worker
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    startCommand: "sh /app/scripts/start_worker.sh"
+    plan: starter
+    disk:
+      name: storage
+      mountPath: /storage
+      sizeGB: 10
+    envVars:
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: resolution-redis
+          property: connectionString
+      - key: STORAGE_BACKEND
+        value: local
+      - key: LOCAL_STORAGE_PATH
+        value: /storage
+      - key: DATABASE_URL
+        value: sqlite:////storage/jobs.db
+      - key: REALESRGAN_MODEL_PATH
+        value: /storage/models/realesrgan/RealESRGAN_x4plus.pth
+      - key: U2NET_MODEL_PATH
+        value: /storage/models/u2net/u2net.pth
+      - key: MAX_IMAGE_SIZE_MB
+        value: "50"
+      - key: MAX_VIDEO_SIZE_MB
+        value: "500"
+      - key: MAX_VIDEO_FRAMES
+        value: "300"
+
+  # ── Frontend (Static Site) ─────────────────────────────────────────────
+  - type: web
+    name: resolution-frontend
+    runtime: static
+    staticPublishPath: ./frontend
+    buildCommand: echo "No build needed"
+    plan: free
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+
+  # ── Redis ──────────────────────────────────────────────────────────────
+  - type: redis
+    name: resolution-redis
+    plan: free
+    ipAllowList: []
