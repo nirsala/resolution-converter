@@ -191,6 +191,20 @@ main {
 .strategy-title { font-weight: 600; font-size: .95rem; }
 .strategy-desc { color: var(--muted); font-size: .8rem; line-height: 1.4; }
 
+.recommended-badge {
+  color: var(--accent2) !important;
+  font-weight: 600;
+}
+
+.strategy-card[data-value="fit_blur"] {
+  border-color: rgba(78, 205, 196, 0.3);
+  background: rgba(78, 205, 196, 0.05);
+}
+.strategy-card[data-value="fit_blur"].active {
+  border-color: var(--accent2);
+  background: rgba(78, 205, 196, 0.15);
+}
+
 /* ── Buttons ─────────────────────────────────────────────────────────── */
 .btn-primary {
   display: inline-flex;

@@ -74,29 +74,35 @@
         <div class="field-group">
           <label>אסטרטגיה</label>
           <div class="strategy-cards">
-            <label class="strategy-card active" data-value="smart_crop">
-              <input type="radio" name="strategy" value="smart_crop" checked hidden />
-              <span class="strategy-icon">🧠</span>
-              <span class="strategy-title">Smart Crop</span>
-              <span class="strategy-desc">AI מוצא את הנושא ומרכז אותו</span>
+            <label class="strategy-card active" data-value="fit_blur">
+              <input type="radio" name="strategy" value="fit_blur" checked hidden />
+              <span class="strategy-icon">🌟</span>
+              <span class="strategy-title">Fit + Blur BG</span>
+              <span class="strategy-desc recommended-badge">מומלץ — כל הפריטים נשמרים, הרקע מטושטש יפה</span>
             </label>
             <label class="strategy-card" data-value="upscale">
               <input type="radio" name="strategy" value="upscale" hidden />
               <span class="strategy-icon">✨</span>
               <span class="strategy-title">AI Upscale</span>
-              <span class="strategy-desc">הגדלה חכמה עם Real-ESRGAN</span>
+              <span class="strategy-desc">הגדלת רזולוציה עם Real-ESRGAN + Blur BG</span>
             </label>
             <label class="strategy-card" data-value="fit_pad">
               <input type="radio" name="strategy" value="fit_pad" hidden />
               <span class="strategy-icon">🖼️</span>
               <span class="strategy-title">Fit + Pad</span>
-              <span class="strategy-desc">שמירה מלאה עם פדינג שחור</span>
+              <span class="strategy-desc">כל הפריטים נשמרים + פסים שחורים</span>
+            </label>
+            <label class="strategy-card" data-value="smart_crop">
+              <input type="radio" name="strategy" value="smart_crop" hidden />
+              <span class="strategy-icon">🧠</span>
+              <span class="strategy-title">Smart Crop</span>
+              <span class="strategy-desc">AI חותך לפי הנושא (עלול לחתוך פריטים)</span>
             </label>
             <label class="strategy-card" data-value="stretch">
               <input type="radio" name="strategy" value="stretch" hidden />
               <span class="strategy-icon">↔️</span>
               <span class="strategy-title">Stretch</span>
-              <span class="strategy-desc">מתיחה ישירה (ללא שמירת יחס)</span>
+              <span class="strategy-desc">מתיחה ישירה (מעוות יחס)</span>
             </label>
           </div>
         </div>

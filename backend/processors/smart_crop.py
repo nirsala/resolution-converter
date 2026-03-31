@@ -118,3 +118,55 @@ def fit_pad(
     x_off = (target_w - new_w) // 2
     canvas[y_off: y_off + new_h, x_off: x_off + new_w] = resized
     return canvas
+
+
+def fit_blur(
+    img_bgr: np.ndarray,
+    target_w: int,
+    target_h: int,
+    blur_strength: int = 55,
+) -> np.ndarray:
+    """
+    Fit + Blur Background — ALL content visible, no black bars, no cropping.
+
+    How it works:
+      1. Scale the original image to FILL the entire target (cover mode) → blurred bg
+      2. Scale the original image to FIT inside the target (contain mode) → sharp foreground
+      3. Place the sharp foreground centered on the blurred background
+
+    Result: every pixel of the original is visible, aspect ratio preserved,
+    and the empty areas are filled with a beautiful blurred version of the image.
+    """
+    orig_h, orig_w = img_bgr.shape[:2]
+
+    # ── Background: scale to COVER (fill entire canvas, may overflow) ─────────
+    scale_cover = max(target_w / orig_w, target_h / orig_h)
+    bg_w = _ensure_even(int(orig_w * scale_cover))
+    bg_h = _ensure_even(int(orig_h * scale_cover))
+    bg = cv2.resize(img_bgr, (bg_w, bg_h), interpolation=cv2.INTER_LANCZOS4)
+
+    # Crop background to exact target size (centred)
+    bx = (bg_w - target_w) // 2
+    by = (bg_h - target_h) // 2
+    bg = bg[by: by + target_h, bx: bx + target_w]
+
+    # Apply heavy Gaussian blur
+    k = blur_strength if blur_strength % 2 == 1 else blur_strength + 1
+    bg = cv2.GaussianBlur(bg, (k, k), 0)
+
+    # Darken background slightly so the foreground pops
+    bg = (bg * 0.6).astype(np.uint8)
+
+    # ── Foreground: scale to FIT (contain, no cropping) ───────────────────────
+    scale_fit = min(target_w / orig_w, target_h / orig_h)
+    fg_w = _ensure_even(int(orig_w * scale_fit))
+    fg_h = _ensure_even(int(orig_h * scale_fit))
+    fg = cv2.resize(img_bgr, (fg_w, fg_h), interpolation=cv2.INTER_LANCZOS4)
+
+    # ── Composite: place foreground centred on background ─────────────────────
+    y_off = (target_h - fg_h) // 2
+    x_off = (target_w - fg_w) // 2
+    canvas = bg.copy()
+    canvas[y_off: y_off + fg_h, x_off: x_off + fg_w] = fg
+
+    return canvas

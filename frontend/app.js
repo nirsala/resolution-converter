@@ -8,7 +8,7 @@ const state = {
   file: null,
   targetW: 1920,
   targetH: 1080,
-  strategy: 'smart_crop',
+  strategy: 'fit_blur',
   pollingInterval: null,
   currentJobId: null,
 };
@@ -305,7 +305,13 @@ function renderHistory(jobs) {
 }
 
 function strategyLabel(s) {
-  const m = { smart_crop: 'Smart', upscale: 'Upscale', fit_pad: 'Fit+Pad', stretch: 'Stretch' };
+  const m = {
+    fit_blur:   '🌟 Fit+Blur',
+    upscale:    '✨ Upscale',
+    fit_pad:    '🖼 Fit+Pad',
+    smart_crop: '🧠 SmartCrop',
+    stretch:    '↔ Stretch',
+  };
   return m[s] || s;
 }
 

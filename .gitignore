@@ -1,5 +1,5 @@
-# AI model weights (large binaries)
-models/
+# AI model weights (large binaries) — root-level only
+/models/
 
 # Processed files
 storage/
