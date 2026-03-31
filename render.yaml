@@ -3,9 +3,8 @@ services:
   - type: web
     name: resolution-api
     runtime: docker
-    dockerfilePath: ./backend/Dockerfile
+    dockerfilePath: ./backend/Dockerfile.api
     dockerContext: ./backend
-    startCommand: "sh /app/scripts/start_api.sh"
     plan: starter
     disk:
       name: storage
@@ -39,9 +38,8 @@ services:
   - type: worker
     name: resolution-worker
     runtime: docker
-    dockerfilePath: ./backend/Dockerfile
+    dockerfilePath: ./backend/Dockerfile.worker
     dockerContext: ./backend
-    startCommand: "sh /app/scripts/start_worker.sh"
     plan: starter
     disk:
       name: storage
@@ -75,7 +73,7 @@ services:
     name: resolution-frontend
     runtime: static
     staticPublishPath: ./frontend
-    buildCommand: echo "No build needed"
+    buildCommand: echo "no build needed"
     plan: free
     routes:
       - type: rewrite
