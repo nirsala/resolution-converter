@@ -306,7 +306,7 @@ function renderHistory(jobs) {
 
 function strategyLabel(s) {
   const m = {
-    recompose:  '🔬 Recompose',
+    recompose:  '🧵 Seam Carving',
     fit_blur:   '🌟 Fit+Blur',
     upscale:    '✨ Upscale',
     fit_pad:    '🖼 Fit+Pad',

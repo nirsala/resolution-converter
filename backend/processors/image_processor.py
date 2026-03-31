@@ -31,7 +31,7 @@ from models.job import ConversionStrategy, Job
 from processors.upscaler import Upscaler
 from processors.saliency import SaliencyDetector
 from processors.smart_crop import smart_crop, fit_pad, fit_blur
-from processors.recompose import recompose
+from processors.seam_carve import seam_carve
 
 logger = logging.getLogger(__name__)
 
@@ -114,10 +114,11 @@ class ImageProcessor:
     def _apply_strategy(self, img: np.ndarray) -> np.ndarray:
 
         if self.strategy == ConversionStrategy.RECOMPOSE:
-            # ⭐ Decompose foreground/background → rebuild at target size
-            logger.info("Strategy: recompose — decompose layers + rebuild.")
+            # ⭐ Seam Carving — removes/inserts low-energy pixel seams
+            # Subjects are protected via saliency mask → no distortion
+            logger.info("Strategy: recompose (seam carving) — content-aware retargeting.")
             saliency = SaliencyDetector.get_instance().generate(img)
-            return recompose(img, self.target_w, self.target_h, saliency)
+            return seam_carve(img, self.target_w, self.target_h, protection_mask=saliency)
 
         elif self.strategy == ConversionStrategy.FIT_BLUR:
             # ⭐ Best default: all content visible, blurred background fills the frame
