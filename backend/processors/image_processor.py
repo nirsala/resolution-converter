@@ -11,8 +11,9 @@ Decision tree:
      → Yes: simple Lanczos resize, done
 
   3. Apply strategy:
-     fit_blur   → ⭐ ALL content visible + blurred background (recommended)
-     fit_pad    → ALL content visible + black bars
+     recompose  → ⭐ Decompose layers (fg/bg) → rebuild at target size
+     fit_blur   → All content visible + blurred background fill
+     fit_pad    → All content visible + black bars
      smart_crop → saliency-guided crop (may cut edges)
      upscale    → Real-ESRGAN + fit_blur (no distortion)
      stretch    → direct stretch (distorts AR)
@@ -30,6 +31,7 @@ from models.job import ConversionStrategy, Job
 from processors.upscaler import Upscaler
 from processors.saliency import SaliencyDetector
 from processors.smart_crop import smart_crop, fit_pad, fit_blur
+from processors.recompose import recompose
 
 logger = logging.getLogger(__name__)
 
@@ -111,7 +113,13 @@ class ImageProcessor:
 
     def _apply_strategy(self, img: np.ndarray) -> np.ndarray:
 
-        if self.strategy == ConversionStrategy.FIT_BLUR:
+        if self.strategy == ConversionStrategy.RECOMPOSE:
+            # ⭐ Decompose foreground/background → rebuild at target size
+            logger.info("Strategy: recompose — decompose layers + rebuild.")
+            saliency = SaliencyDetector.get_instance().generate(img)
+            return recompose(img, self.target_w, self.target_h, saliency)
+
+        elif self.strategy == ConversionStrategy.FIT_BLUR:
             # ⭐ Best default: all content visible, blurred background fills the frame
             logger.info("Strategy: fit_blur — all content visible + blur background.")
             return fit_blur(img, self.target_w, self.target_h)

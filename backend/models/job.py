@@ -13,7 +13,8 @@ class JobStatus(str, Enum):
 
 
 class ConversionStrategy(str, Enum):
-    FIT_BLUR = "fit_blur"           # ⭐ All content visible + blurred background fill
+    RECOMPOSE = "recompose"         # ⭐ Decompose layers → rebuild at target size
+    FIT_BLUR = "fit_blur"           # All content visible + blurred background fill
     FIT_PAD = "fit_pad"             # All content visible + black bars
     SMART_CROP = "smart_crop"       # AI saliency crop (may cut edges)
     UPSCALE = "upscale"             # AI upscale (Real-ESRGAN) + fit_blur

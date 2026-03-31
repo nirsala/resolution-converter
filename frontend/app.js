@@ -8,7 +8,7 @@ const state = {
   file: null,
   targetW: 1920,
   targetH: 1080,
-  strategy: 'fit_blur',
+  strategy: 'recompose',
   pollingInterval: null,
   currentJobId: null,
 };
@@ -306,6 +306,7 @@ function renderHistory(jobs) {
 
 function strategyLabel(s) {
   const m = {
+    recompose:  '🔬 Recompose',
     fit_blur:   '🌟 Fit+Blur',
     upscale:    '✨ Upscale',
     fit_pad:    '🖼 Fit+Pad',
